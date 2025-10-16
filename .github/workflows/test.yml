@@ -1,0 +1,83 @@
+name: Test
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Install Zsh
+      run: |
+        if [ "$RUNNER_OS" == "Linux" ]; then
+          sudo apt-get update
+          sudo apt-get install -y zsh
+        fi
+        
+    - name: Check Zsh version
+      run: zsh --version
+      
+    - name: Test plugin loads without errors
+      run: |
+        zsh -c 'source zsh-autosuggestions.zsh; echo "Plugin loaded successfully"'
+        
+    - name: Check for syntax errors
+      run: |
+        zsh -n zsh-autosuggestions.zsh
+        
+    - name: Verify functions are defined
+      run: |
+        zsh -c '
+          source zsh-autosuggestions.zsh
+          
+          # Check if main functions exist
+          if ! typeset -f _zsh_autosuggest_fetch_suggestion > /dev/null; then
+            echo "Error: _zsh_autosuggest_fetch_suggestion not defined"
+            exit 1
+          fi
+          
+          if ! typeset -f _zsh_autosuggest_render > /dev/null; then
+            echo "Error: _zsh_autosuggest_render not defined"
+            exit 1
+          fi
+          
+          if ! typeset -f _zsh_autosuggest_cycle_up > /dev/null; then
+            echo "Error: _zsh_autosuggest_cycle_up not defined"
+            exit 1
+          fi
+          
+          if ! typeset -f _zsh_autosuggest_cycle_down > /dev/null; then
+            echo "Error: _zsh_autosuggest_cycle_down not defined"
+            exit 1
+          fi
+          
+          echo "✓ All functions defined"
+        '
+        
+    - name: Verify widgets are bound
+      run: |
+        zsh -c '
+          source zsh-autosuggestions.zsh
+          
+          # Check widget bindings
+          if [[ "${widgets[up-line-or-history]}" != "user:_zsh_autosuggest_widget_up_line_or_history" ]]; then
+            echo "Error: up-line-or-history widget not bound correctly"
+            exit 1
+          fi
+          
+          if [[ "${widgets[down-line-or-history]}" != "user:_zsh_autosuggest_widget_down_line_or_history" ]]; then
+            echo "Error: down-line-or-history widget not bound correctly"
+            exit 1
+          fi
+          
+          echo "✓ Widgets bound correctly"
+        '
