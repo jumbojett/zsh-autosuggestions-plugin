@@ -1,45 +1,34 @@
-# ZSH Auto-Suggestions# ZSH Auto-Suggestions Installation Guide
+# ZSH Auto-Suggestions
 
+🐟 Fish-style auto-suggestions for Zsh with history cycling support!
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-🐟 Fish-style auto-suggestions for Zsh with history cycling support!This guide will help you integrate the fish-style auto-suggestions into your actual zsh shell.
+## Features
 
-
-
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)## Quick Start
-
-
-
-## Features### Option 1: Load Temporarily (Test First)
-
-
-
-✨ **Real-time suggestions** - See command suggestions in gray text as you type  Test the plugin without making permanent changes:
-
+✨ **Real-time suggestions** - See command suggestions in gray text as you type  
 🔄 **Cycle through options** - Use ↑/↓ arrows to browse through matching commands  
+⚡ **Fast and native** - Built with pure zsh, no external dependencies  
+🎨 **Customizable** - Easy to configure colors and behavior  
+🔍 **Smart history search** - Searches through your entire command history  
 
-⚡ **Fast and native** - Built with pure zsh, no external dependencies  ```bash
+## Quick Start
 
-🎨 **Customizable** - Easy to configure colors and behavior
+### Option 1: Load Temporarily (Test First)
 
-🔍 **Smart history search** - Searches through your entire command history  ```
+Test the plugin without making permanent changes:
 
+```bash
+source ./zsh-autosuggestions.zsh
+```
 
+This will load the plugin for your current session only. Try typing some commands and you should see gray suggestions appear!
 
-## Quick StartThis will load the plugin for your current session only. Try typing some commands and you should see gray suggestions appear!
+## Installation
 
+### Option 1: Clone the repository
 
-
-### Installation### Option 2: Permanent Installation
-
-
-
-**Option 1: Clone the repository**Add to your `~/.zshrc` file:
-
-
-
-```bash```bash
-
+```bash
 git clone https://github.com/jumbojett/zsh-autosuggestions-plugin.git ~/.zsh/zsh-autosuggestions
 ```
 
@@ -49,35 +38,32 @@ Then add to your `~/.zshrc`:
 source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
 ```
 
-Then add to your `~/.zshrc`:
-
 Then reload your shell:
 
 ```bash
-
-source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh```bash
-
-```source ~/.zshrc
-
+source ~/.zshrc
 ```
 
-**Option 2: Direct download**
+### Option 2: Direct download
+
+```bash
+# Download the plugin
+curl -o ~/.zsh/zsh-autosuggestions.zsh https://raw.githubusercontent.com/jumbojett/zsh-autosuggestions-plugin/main/zsh-autosuggestions.zsh
+
+# Add to your ~/.zshrc
+echo 'source ~/.zsh/zsh-autosuggestions.zsh' >> ~/.zshrc
+
+# Reload shell
+source ~/.zshrc
+```
 
 ### Option 3: Install to Standard Plugin Location
 
-```bash
-
-# Download the pluginFor a cleaner setup, move the plugin to your zsh plugins directory:
-
-curl -o ~/.zsh/zsh-autosuggestions.zsh https://raw.githubusercontent.com/jumbojett/zsh-autosuggestions-plugin/main/zsh-autosuggestions.zsh
+For a cleaner setup, move the plugin to your zsh plugins directory:
 
 ```bash
-
-# Add to your ~/.zshrc# Create plugins directory if it doesn't exist
-
-echo 'source ~/.zsh/zsh-autosuggestions.zsh' >> ~/.zshrcmkdir -p ~/.zsh/plugins
-
-```
+# Create plugins directory if it doesn't exist
+mkdir -p ~/.zsh/plugins
 
 # Copy the plugin
 cp ./zsh-autosuggestions.zsh ~/.zsh/plugins/
@@ -85,262 +71,167 @@ cp ./zsh-autosuggestions.zsh ~/.zsh/plugins/
 # Add to ~/.zshrc
 echo 'source ~/.zsh/plugins/zsh-autosuggestions.zsh' >> ~/.zshrc
 
-```
-
 # Reload shell
-
-## Usagesource ~/.zshrc
-
+source ~/.zshrc
 ```
+
+## Usage
 
 ### Auto-Suggestions
 
-- **As you type**: Suggestions appear in gray text automatically## Features
-
-- **From history**: Searches your zsh command history
-
-- **Smart matching**: Only shows commands starting with your input### Auto-Suggestions
-
 - **As you type**: See suggestions in gray text automatically
+- **From history**: Suggestions come from your zsh command history
+- **Smart matching**: Only shows commands that start with what you've typed
 
-### Accepting Suggestions- **From history**: Suggestions come from your zsh command history
-
-- **→ (Right Arrow)** or **End**: Accept entire suggestion when cursor is at end- **Smart matching**: Only shows commands that start with what you've typed
-
-- **Tab**: Accept suggestion (at end of line)
-
-- Press any other key to ignore the suggestion### Accepting Suggestions
+### Accepting Suggestions
 
 - **→ (Right Arrow)**: Accept entire suggestion when cursor is at end of line
-
-### Cycling Through Suggestions- **End Key**: Accept entire suggestion
-
-- **↑ (Up Arrow)**: Cycle to previous (older) suggestion- **Ctrl+→**: Accept one word at a time
-
-- **↓ (Down Arrow)**: Cycle to next (newer) suggestion- **Tab**: Normal tab completion (unchanged)
-
-- Works when cursor is at the end of line with matching commands
+- **End Key**: Accept entire suggestion
+- **Ctrl+→**: Accept one word at a time
+- **Tab**: Normal tab completion (unchanged)
 
 ### Cycling Through Suggestions
 
-### Examples- **↑ (Up Arrow)**: When cursor is at end of line with text, cycle to older suggestions
-
+- **↑ (Up Arrow)**: When cursor is at end of line with text, cycle to older suggestions
 - **↓ (Down Arrow)**: Cycle to newer suggestions
+- **↑↓ with empty line**: Normal history navigation (unchanged)
 
-Type `git` and see suggestions:- **↑↓ with empty line**: Normal history navigation (unchanged)
-
-```bash
-
-$ git█              # Shows: git status (in gray)## Usage Examples
-
-```
+## Usage Examples
 
 1. **Type a common command:**
+   ```
+   $ gi█
+   ```
+   You might see: `git status` in gray
 
-Press ↑ to cycle:   ```
-
-```bash   $ gi█
-
-$ git█              # Shows: git push (in gray)   ```
-
-$ git█              # Shows: git pull (in gray)   You might see: `git status` in gray
-
-$ git█              # Shows: git commit -m "..." (in gray)   
-
-```2. **Press → to accept:**
-
+2. **Press → to accept:**
+   ```
+   $ git status█
    ```
 
-Press → or Tab to accept:   $ git status█
-
-```bash   ```
-
-$ git status█
-
-```3. **Or press ↑ to see other suggestions:**
-
+3. **Or press ↑ to see other suggestions:**
    ```
-
-## Configuration   $ git push█  (or git pull, git commit, etc.)
-
+   $ git push█  (or git pull, git commit, etc.)
    ```
-
-Edit these settings in `zsh-autosuggestions.zsh`:
 
 4. **Accept word-by-word with Ctrl+→:**
-
-### Change Suggestion Color   ```
-
+   ```
    $ git█  →  $ git status█  →  $ git status --short█
+   ```
 
-```bash   ```
+## Customization
 
-# Default gray
+Edit the configuration section in `zsh-autosuggestions.zsh`:
 
-typeset -g ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8'## Customization
-
-
-
-# Other options:Edit the configuration section in `zsh-autosuggestions.zsh`:
-
-# fg=240  - Darker gray
-
-# fg=244  - Medium gray```bash
-
-# fg=248  - Lighter gray# Change suggestion color (currently gray)
-
-# fg=cyan,dim - Dimmed cyanZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8'     # Try: fg=240, fg=244, etc.
-
-```
+```bash
+# Change suggestion color (currently gray)
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8'     # Try: fg=240, fg=244, etc.
 
 # Maximum number of suggestions to cache
+# (currently set to 10, increase for more cycling options)
+# Change this number in the _zsh_autosuggest_fetch_suggestion function
+```
 
-### Maximum Suggestions to Cache# (currently set to 10, increase for more cycling options)
+### Available Colors
 
-head -n 10  # Change this number in the _zsh_autosuggest_fetch_suggestion function
-
-Find this line in `_zsh_autosuggest_fetch_suggestion` function:```
-
-
-
-```bash### Available Colors
-
-(( ${#matches[@]} >= 10 )) && break  # Change 10 to your preferred number
-
-```Try different gray shades by changing `fg=8`:
+Try different gray shades by changing `fg=8`:
 
 - `fg=8` - Default gray
-
-## Compatibility- `fg=240` - Darker gray
-
+- `fg=240` - Darker gray
 - `fg=244` - Medium gray  
+- `fg=248` - Lighter gray
+- `fg=cyan,dim` - Dimmed cyan
+- `fg=blue,dim` - Dimmed blue
 
-- **Zsh**: 5.0 or higher- `fg=248` - Lighter gray
+## Compatibility
 
-- **macOS**: ✅ Fully tested- `fg=cyan,dim` - Dimmed cyan
-
-- **Linux**: ✅ Should work- `fg=blue,dim` - Dimmed blue
-
+- **Zsh**: 5.0 or higher
+- **macOS**: ✅ Fully tested
+- **Linux**: ✅ Should work
 - **Windows (WSL)**: ✅ Should work
 
-## Troubleshooting
-
 Works with:
-
-- Oh My Zsh### Suggestions not appearing?
-
-- Prezto1. Make sure you have command history: `history | head`
-
-- Plain zsh2. Try typing a command you've used before
-
-3. Check that the plugin loaded: should see "✓ ZSH Auto-Suggestions loaded" message
+- Oh My Zsh
+- Prezto
+- Plain zsh
 
 ## Troubleshooting
 
-### Conflicts with other plugins?
+### Suggestions not appearing?
 
-### Suggestions not appearing?If you use other zsh plugins (like oh-my-zsh), load this plugin AFTER them:
+1. Check your history exists:
+   ```bash
+   history | head
+   ```
 
+2. Try typing a command you've used before
 
-
-1. Check your history exists:```bash
-
-   ```bash# ~/.zshrc order:
-
-   history | headsource ~/.oh-my-zsh/oh-my-zsh.sh  # Or other plugin managers
-
-   ```# ... other plugins ...
-
-source ~/.zsh/plugins/zsh-autosuggestions.zsh  # Load this last
-
-2. Try typing a command you've used before```
-
-
-
-3. Look for the success message when loading:### Arrow keys not working?
-
-   ```The plugin preserves normal arrow key behavior:
-
-   ✓ ZSH Auto-Suggestions loaded- ↑↓ with empty line = history navigation (normal)
-
-   ```- ↑↓ with text at end of line = cycle suggestions (new feature)
-
-- ←→ = cursor movement (normal) + accept suggestion when at end (new)
+3. Look for the success message when loading:
+   ```
+   ✓ ZSH Auto-Suggestions loaded
+   ```
 
 ### Conflicts with other plugins?
-
-## Uninstalling
 
 Load this plugin **after** other plugins in your `~/.zshrc`:
+
+```bash
+source ~/.oh-my-zsh/oh-my-zsh.sh  # Load framework first
+# ... other plugins ...
+source ~/.zsh/zsh-autosuggestions.zsh  # Load this last
+```
+
+### Arrow keys not working?
+
+The plugin preserves normal arrow key behavior:
+- ↑↓ with **empty line** = normal history navigation
+- ↑↓ with **text at end** = cycle through suggestions
+- ←→ = normal cursor movement + accept suggestion when at end (new)
+
+## Uninstalling
 
 Remove the source line from your `~/.zshrc`:
 
 ```bash
+# Comment out or delete this line:
+# source ~/.zsh/plugins/zsh-autosuggestions.zsh
+```
 
-source ~/.oh-my-zsh/oh-my-zsh.sh  # Load framework first```bash
-
-# ... other plugins ...# Comment out or delete this line:
-
-source ~/.zsh/zsh-autosuggestions.zsh  # Load this last# source ~/.zsh/plugins/zsh-autosuggestions.zsh
-
-``````
-
-
-
-### Arrow keys not working?Then reload:
+Then reload:
 
 ```bash
+source ~/.zshrc
+```
 
-The plugin preserves normal behavior:source ~/.zshrc
+## Comparison with suggest.sh
 
-- ↑↓ with **empty line** = normal history navigation```
-
-- ↑↓ with **text at end** = cycle through suggestions
-
-- ←→ = normal cursor movement## Comparison with suggest.sh
-
-
-
-## Uninstalling| Feature | suggest.sh (Proof of Concept) | zsh-autosuggestions.zsh (Real Integration) |
-
+| Feature | suggest.sh (Proof of Concept) | zsh-autosuggestions.zsh (Real Integration) |
 |---------|-------------------------------|-------------------------------------------|
-
-Remove the source line from your `~/.zshrc`:| Shell Integration | Separate pseudo-shell | Native zsh integration |
-
+| Shell Integration | Separate pseudo-shell | Native zsh integration |
 | History | Reads history files | Uses zsh's built-in history |
+| Performance | Good | Excellent (native zle) |
+| Compatibility | Works in any shell | zsh only |
+| Key Bindings | Custom handlers | Native zsh bindings |
+| Use Case | Testing/demo | Daily use |
 
-```bash| Performance | Good | Excellent (native zle) |
+## How It Works
 
-# Remove or comment out:| Compatibility | Works in any shell | zsh only |
-
-# source ~/.zsh/zsh-autosuggestions.zsh| Key Bindings | Custom handlers | Native zsh bindings |
-
-```| Use Case | Testing/demo | Daily use |
-
-
-
-Then reload:## Next Steps
-
-```bash
-
-source ~/.zshrc1. **Test it**: `source zsh-autosuggestions.zsh` in your terminal
-
-```2. **Try it out**: Type some commands and experiment with the keys
-
-3. **Customize**: Adjust the color and behavior to your liking
-
-## How It Works4. **Make it permanent**: Add to your `~/.zshrc` when satisfied
-
-
-
-This plugin integrates with zsh's line editor (ZLE) by:Enjoy your fish-style auto-suggestions in zsh! 🐟➡️🔧
-
+This plugin integrates with zsh's line editor (ZLE) by:
 
 1. **Wrapping widgets** - Intercepts keyboard input via ZLE widgets
 2. **Searching history** - Uses zsh's built-in `$history` array
 3. **Display via POSTDISPLAY** - Shows suggestions using zsh's `POSTDISPLAY` variable
 4. **Highlighting** - Applies gray color using `region_highlight`
 5. **Hook system** - Uses `line-pre-redraw` to maintain display across redraws
+
+## Next Steps
+
+1. **Test it**: `source zsh-autosuggestions.zsh` in your terminal
+2. **Try it out**: Type some commands and experiment with the keys
+3. **Customize**: Adjust the color and behavior to your liking
+4. **Make it permanent**: Add to your `~/.zshrc` when satisfied
+
+Enjoy your fish-style auto-suggestions in zsh! 🐟➡️🔧
 
 ## Contributing
 
