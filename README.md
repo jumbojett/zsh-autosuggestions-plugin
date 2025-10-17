@@ -203,16 +203,6 @@ Then reload:
 source ~/.zshrc
 ```
 
-## Comparison with suggest.sh
-
-| Feature | suggest.sh (Proof of Concept) | zsh-autosuggestions.zsh (Real Integration) |
-|---------|-------------------------------|-------------------------------------------|
-| Shell Integration | Separate pseudo-shell | Native zsh integration |
-| History | Reads history files | Uses zsh's built-in history |
-| Performance | Good | Excellent (native zle) |
-| Compatibility | Works in any shell | zsh only |
-| Key Bindings | Custom handlers | Native zsh bindings |
-| Use Case | Testing/demo | Daily use |
 
 ## How It Works
 
