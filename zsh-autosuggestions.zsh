@@ -26,7 +26,7 @@ typeset -g _ZSH_AUTOSUGGEST_LAST_BUFFER=""
 # SUGGESTION ENGINE
 #==============================================================================
 
-# Generate suggestions from history based on current buffer
+# Generate suggestions from filesystem and history based on current buffer
 _zsh_autosuggest_fetch_suggestion() {
     local buffer="$1"
     
@@ -42,23 +42,40 @@ _zsh_autosuggest_fetch_suggestion() {
         _ZSH_AUTOSUGGEST_SUGGESTIONS_ARRAY=()
         _ZSH_AUTOSUGGEST_SUGGESTION_INDEX=0
         
-        # Get unique commands from history using the history array
-        # Search backwards through history (most recent first)
         local -a matches
         local cmd
         local seen_commands
         typeset -A seen_commands
         
-        # Iterate through history in reverse (newest first)
-        for cmd in "${(@)history[@]}"; do
-            # Check if command contains buffer and hasn't been seen
-            if [[ "$cmd" == *"$buffer"* ]] && [[ "$cmd" != "$buffer" ]] && [[ -z "${seen_commands[$cmd]}" ]]; then
-                matches+=("$cmd")
-                seen_commands[$cmd]=1
-                # Stop after 10 matches
-                (( ${#matches[@]} >= 10 )) && break
+        # PRIORITY 1: Search current directory files and folders first
+        local -a fs_matches
+        for file in "$PWD"/*; do
+            if [[ -e "$file" ]]; then
+                local basename="${file##*/}"
+                # Check if filename contains buffer (case-insensitive) and hasn't been seen
+                if [[ "${basename:l}" == *"${buffer:l}"* ]] && [[ -z "${seen_commands[$basename]}" ]]; then
+                    fs_matches+=("$basename")
+                    seen_commands[$basename]=1
+                fi
             fi
         done
+        
+        # Add filesystem matches first (highest priority)
+        matches=("${fs_matches[@]}")
+        
+        # PRIORITY 2: Add history matches (up to 10 total matches)
+        if (( ${#matches[@]} < 10 )); then
+            # Iterate through history in reverse (newest first)
+            for cmd in "${(@)history[@]}"; do
+                # Check if command contains buffer (case-insensitive) and hasn't been seen
+                if [[ "${cmd:l}" == *"${buffer:l}"* ]] && [[ "$cmd" != "$buffer" ]] && [[ -z "${seen_commands[$cmd]}" ]]; then
+                    matches+=("$cmd")
+                    seen_commands[$cmd]=1
+                    # Stop after 10 total matches
+                    (( ${#matches[@]} >= 10 )) && break
+                fi
+            done
+        fi
         
         _ZSH_AUTOSUGGEST_SUGGESTIONS_ARRAY=("${matches[@]}")
     fi
@@ -67,16 +84,16 @@ _zsh_autosuggest_fetch_suggestion() {
     local count=${#_ZSH_AUTOSUGGEST_SUGGESTIONS_ARRAY[@]}
     
     if (( count > 0 )); then
-        # Bounds checking (using 0-based index for internal tracking)
+        # Bounds checking
         if (( _ZSH_AUTOSUGGEST_SUGGESTION_INDEX >= count )); then
-            _ZSH_AUTOSUGGEST_SUGGESTION_INDEX=$((count - 1))
-        elif (( _ZSH_AUTOSUGGEST_SUGGESTION_INDEX < 0 )); then
             _ZSH_AUTOSUGGEST_SUGGESTION_INDEX=0
+        elif (( _ZSH_AUTOSUGGEST_SUGGESTION_INDEX < 0 )); then
+            _ZSH_AUTOSUGGEST_SUGGESTION_INDEX=$((count - 1))
         fi
         
         # Get the full suggestion (zsh arrays are 1-indexed)
-        # Index 0 = most recent (last in array)
-        local array_index=$((count - _ZSH_AUTOSUGGEST_SUGGESTION_INDEX))
+        # Use the index directly - first match (index 0) is shown first
+        local array_index=$((_ZSH_AUTOSUGGEST_SUGGESTION_INDEX + 1))
         local full_suggestion="${_ZSH_AUTOSUGGEST_SUGGESTIONS_ARRAY[$array_index]}"
         
         # If buffer is at the start of the command, show the completion
@@ -156,17 +173,16 @@ _zsh_autosuggest_cycle_up() {
     
     local count=${#_ZSH_AUTOSUGGEST_SUGGESTIONS_ARRAY[@]}
     
-    # Only cycle if we have multiple suggestions
-    if (( count > 1 )); then
-        # Move to next suggestion (older)
+    # Only cycle if we have suggestions
+    if (( count > 0 )); then
+        # Move to next suggestion
         _ZSH_AUTOSUGGEST_SUGGESTION_INDEX=$((_ZSH_AUTOSUGGEST_SUGGESTION_INDEX + 1))
         if (( _ZSH_AUTOSUGGEST_SUGGESTION_INDEX >= count )); then
-            _ZSH_AUTOSUGGEST_SUGGESTION_INDEX=$((count - 1))
+            _ZSH_AUTOSUGGEST_SUGGESTION_INDEX=0
         fi
         
         # Get suggestion from array (zsh arrays are 1-indexed)
-        # We store newest first, so index 0 = newest, higher index = older
-        local array_index=$((count - _ZSH_AUTOSUGGEST_SUGGESTION_INDEX))
+        local array_index=$((_ZSH_AUTOSUGGEST_SUGGESTION_INDEX + 1))
         local full_suggestion="${_ZSH_AUTOSUGGEST_SUGGESTIONS_ARRAY[$array_index]}"
         
         # If buffer is at the start of the command, show the completion
@@ -179,9 +195,6 @@ _zsh_autosuggest_cycle_up() {
         
         # Render with proper highlighting
         _zsh_autosuggest_render
-    elif (( count == 1 )); then
-        # Only one suggestion - just keep showing it
-        _zsh_autosuggest_render
     fi
 }
 
@@ -191,13 +204,13 @@ _zsh_autosuggest_cycle_down() {
     
     local count=${#_ZSH_AUTOSUGGEST_SUGGESTIONS_ARRAY[@]}
     
-    if (( count > 1 && _ZSH_AUTOSUGGEST_SUGGESTION_INDEX > 0 )); then
-        # Move to previous suggestion (newer)
+    if (( count > 0 && _ZSH_AUTOSUGGEST_SUGGESTION_INDEX > 0 )); then
+        # Move to previous suggestion
         _ZSH_AUTOSUGGEST_SUGGESTION_INDEX=$((_ZSH_AUTOSUGGEST_SUGGESTION_INDEX - 1))
         
         # Get suggestion from array (zsh arrays are 1-indexed)
         local buffer="$BUFFER"
-        local array_index=$((count - _ZSH_AUTOSUGGEST_SUGGESTION_INDEX))
+        local array_index=$((_ZSH_AUTOSUGGEST_SUGGESTION_INDEX + 1))
         local full_suggestion="${_ZSH_AUTOSUGGEST_SUGGESTIONS_ARRAY[$array_index]}"
         
         # If buffer is at the start of the command, show the completion
